@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  localstack:
+    image: localstack/localstack
+    ports:
+      - "4566-4583:4566-4583"
+    environment:
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+      - SERVICES=s3
+      - AWS_ACCESS_KEY_ID=foobar
+      - AWS_SECRET_ACCESS_KEY=foobar
+      - AWS_DEFAULT_REGION=eu-west-3
+    volumes:
+      - "./docker/localstack:/tmp/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"

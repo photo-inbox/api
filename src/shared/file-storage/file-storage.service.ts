@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { S3 } from 'aws-sdk';
 import stream from 'stream';
 import { ConfigService } from '@nestjs/config';
@@ -9,14 +9,18 @@ import {
   UploadParams,
   UploadResponse,
 } from './file-storage.models';
-import { Env } from '../config';
+import { Env, NodeEnv } from '../config';
 
 @Injectable()
 export class FileStorageService {
+  private readonly logger = new Logger(FileStorageService.name);
+
   private readonly s3 = new S3({
+    endpoint: this.config.get('AWS_ENDPOINT'),
     accessKeyId: this.config.get('AWS_ACCESS_KEY_ID'),
     secretAccessKey: this.config.get('AWS_SECRET_ACCESS_KEY'),
     region: this.config.get('AWS_REGION'),
+    s3ForcePathStyle: this.config.get('NODE_ENV') !== NodeEnv.production,
   });
 
   constructor(private readonly config: ConfigService<Env>) {}

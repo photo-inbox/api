@@ -1,9 +1,18 @@
 import { S3 } from 'aws-sdk';
 
-export type UploadParams = S3.Types.PutObjectRequest;
-export type UploadResponse = S3.Types.ManagedUpload.SendData;
+export type UploadParams = Pick<
+  S3.Types.PutObjectRequest,
+  'Bucket' | 'Key' | 'Body' | 'ContentType'
+>;
+export type UploadResponse = Pick<S3.Types.ManagedUpload.SendData, 'Key'>;
 
-export type GetObjectReadStreamParams = S3.Types.GetObjectRequest;
+export type GetObjectReadStreamParams = Pick<
+  S3.Types.GetObjectRequest,
+  'Bucket' | 'Key'
+>;
 
-export type HeadObjectParams = S3.Types.HeadObjectRequest;
-export type HeadObjectResponse = S3.Types.HeadObjectOutput;
+export type HeadObjectParams = Pick<
+  S3.Types.HeadObjectRequest,
+  'Bucket' | 'Key'
+>;
+export type HeadObjectResponse = Pick<S3.Types.HeadObjectOutput, 'ContentType'>;
