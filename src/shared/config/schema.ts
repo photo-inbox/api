@@ -3,6 +3,7 @@ import { Env, NodeEnv } from './env';
 
 export const SCHEMA = Joi.object<Env, true>({
   NODE_ENV: Joi.string().valid(...Object.values(NodeEnv)),
+
   AWS_ENDPOINT: Joi.string().when('NODE_ENV', {
     is: NodeEnv.production,
     then: Joi.optional(),
@@ -23,4 +24,22 @@ export const SCHEMA = Joi.object<Env, true>({
     then: Joi.required(),
     otherwise: Joi.optional().default('eu-west-3'),
   }),
+
+  TYPEORM_HOST: Joi.string().when('NODE_ENV', {
+    is: NodeEnv.production,
+    then: Joi.required(),
+    otherwise: Joi.optional().default('localhost'),
+  }),
+  TYPEORM_PORT: Joi.number().optional().default(5432),
+  TYPEORM_USERNAME: Joi.string().when('NODE_ENV', {
+    is: NodeEnv.production,
+    then: Joi.required(),
+    otherwise: Joi.optional().default('postgres'),
+  }),
+  TYPEORM_PASSWORD: Joi.string().when('NODE_ENV', {
+    is: NodeEnv.production,
+    then: Joi.required(),
+    otherwise: Joi.optional().default('foobar'),
+  }),
+  TYPEORM_DATABASE: Joi.string().optional().default('photo-inbox'),
 });

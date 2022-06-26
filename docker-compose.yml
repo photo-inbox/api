@@ -3,6 +3,8 @@ version: "3"
 services:
   localstack:
     image: localstack/localstack
+    container_name: localstack
+    restart: unless-stopped
     ports:
       - "4566-4583:4566-4583"
     environment:
@@ -15,3 +17,14 @@ services:
     volumes:
       - "./docker/localstack:/tmp/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: foobar
+    volumes:
+      - "./docker/postgres:/var/lib/postgresql/data"
