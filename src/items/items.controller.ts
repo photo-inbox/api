@@ -12,7 +12,7 @@ import {
 import { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ItemsService } from './items.service';
-import { ItemEntity } from '../../db';
+import { ItemDto } from './dtos/item.dto';
 
 @Controller()
 export class ItemsController {
@@ -20,23 +20,33 @@ export class ItemsController {
 
   constructor(private readonly service: ItemsService) {}
 
+  @Get()
+  async getAll(): Promise<ItemDto[]> {
+    return await this.service.getAll();
+  }
+
+  @Get(':id')
+  async getById(@Param('id') id: string): Promise<ItemDto> {
+    return await this.service.getById(id);
+  }
+
   @Post()
   @UseInterceptors(FileInterceptor('file'))
   async create(
     @UploadedFile()
     file: Express.Multer.File,
-  ): Promise<ItemEntity> {
-    return this.service.create(file);
+  ): Promise<ItemDto> {
+    return await this.service.create(file);
   }
 
-  @Get('image/:filename')
+  @Get(':id/image')
   async getImage(
     @Res({ passthrough: true }) res: Response,
-    @Param('filename') filename: string,
+    @Param('id') id: string,
   ): Promise<StreamableFile> {
-    this.logger.debug(`getImage, ${filename}`);
+    this.logger.debug(`getImage, ${id}`);
 
-    const [data, stream] = await this.service.getImage(filename);
+    const [data, stream, filename] = await this.service.getImage(id);
 
     res.set({
       'Content-Type': data.ContentType,

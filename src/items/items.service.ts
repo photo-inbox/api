@@ -10,6 +10,7 @@ import stream from 'stream';
 import { Repository } from 'typeorm';
 import { ItemEntity } from '../../db';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ItemDto } from './dtos/item.dto';
 
 @Injectable()
 export class ItemsService {
@@ -22,7 +23,19 @@ export class ItemsService {
     private readonly repository: Repository<ItemEntity>,
   ) {}
 
-  async create(file: Express.Multer.File): Promise<ItemEntity> {
+  async getAll(): Promise<ItemDto[]> {
+    const dbos = await this.repository.find();
+
+    return dbos.map(this.dboToDto);
+  }
+
+  async getById(id: string): Promise<ItemDto> {
+    const dbo = await this.repository.findOneOrFail({ where: { id } });
+
+    return this.dboToDto(dbo);
+  }
+
+  async create(file: Express.Multer.File): Promise<ItemDto> {
     const params: UploadParams = {
       Bucket: this.bucket,
       Key: file.originalname,
@@ -32,24 +45,36 @@ export class ItemsService {
 
     await this.fileStorage.upload(params);
 
-    return this.repository.save(
+    const dbo = await this.repository.save(
       this.repository.create({ image: file.originalname }),
     );
+
+    return this.dboToDto(dbo);
   }
 
   async getImage(
-    filename: string,
-  ): Promise<[HeadObjectResponse, stream.Readable]> {
-    this.logger.debug(`getImage, ${filename}`);
+    id: string,
+  ): Promise<[HeadObjectResponse, stream.Readable, string]> {
+    this.logger.debug(`getImage, ${id}`);
+
+    const dbo = await this.repository.findOneOrFail({ where: { id } });
 
     const params: HeadObjectParams & GetObjectReadStreamParams = {
       Bucket: this.bucket,
-      Key: filename,
+      Key: dbo.image,
     };
 
     return [
       await this.fileStorage.headObject(params),
       this.fileStorage.getObjectReadStream(params),
+      dbo.image,
     ];
+  }
+
+  private dboToDto(dbo: ItemEntity): ItemDto {
+    return {
+      id: dbo.id,
+      imageUrl: `api/items/${dbo.id}/image`,
+    };
   }
 }
