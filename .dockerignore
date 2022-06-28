@@ -1,0 +1,5 @@
+# exclude docker volumes (locally) as they are heavy
+docker
+
+# exclude dotenv (locally) as there are access keys
+.env
