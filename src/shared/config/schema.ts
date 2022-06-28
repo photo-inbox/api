@@ -2,7 +2,10 @@ import * as Joi from 'joi';
 import { Env, NodeEnv } from './env';
 
 export const SCHEMA = Joi.object<Env, true>({
-  NODE_ENV: Joi.string().valid(...Object.values(NodeEnv)),
+  NODE_ENV: Joi.string()
+    .valid(...Object.values(NodeEnv))
+    .optional()
+    .default(NodeEnv.development),
 
   AWS_ENDPOINT: Joi.string().when('NODE_ENV', {
     is: NodeEnv.production,
