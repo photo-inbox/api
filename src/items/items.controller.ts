@@ -12,7 +12,7 @@ import {
 import { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ItemsService } from './items.service';
-import { ItemDto } from './dtos/item.dto';
+import { ItemDto } from '@photo-inbox/dtos';
 
 @Controller()
 export class ItemsController {

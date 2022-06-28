@@ -10,7 +10,7 @@ import stream from 'stream';
 import { Repository } from 'typeorm';
 import { ItemEntity } from '../../db';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ItemDto } from './dtos/item.dto';
+import { ItemDto } from '@photo-inbox/dtos';
 
 @Injectable()
 export class ItemsService {
