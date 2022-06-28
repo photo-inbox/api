@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { Env, SCHEMA } from './shared';
+import { Env, ItemEntity, SCHEMA } from './shared';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ItemEntity } from '../db';
 import { ItemsModule } from './items/items.module';
 import { RouterModule } from '@nestjs/core';
 

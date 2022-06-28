@@ -1,2 +1,3 @@
 export * from './config';
-export * from './file-storage';
+export * from './entities';
+export * from './fs';

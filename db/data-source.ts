@@ -2,7 +2,6 @@ import * as dotenv from 'dotenv';
 import { DataSource } from 'typeorm';
 import { CreateItems1656261359684 } from './migrations';
 import { Env, SCHEMA } from '../src/shared';
-import { ItemEntity } from './entities';
 
 const env: Env = (() => {
   const { parsed } = dotenv.config();
@@ -17,7 +16,6 @@ export default new DataSource({
   username: env.TYPEORM_USERNAME,
   password: env.TYPEORM_PASSWORD,
   database: env.TYPEORM_DATABASE,
-  entities: [ItemEntity],
   migrations: [CreateItems1656261359684],
   migrationsRun: true,
 });

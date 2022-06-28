@@ -8,12 +8,12 @@ import {
   HeadObjectResponse,
   UploadParams,
   UploadResponse,
-} from './file-storage.models';
+} from './fs.models';
 import { Env, NodeEnv } from '../config';
 
 @Injectable()
-export class FileStorageService {
-  private readonly logger = new Logger(FileStorageService.name);
+export class FsService {
+  private readonly logger = new Logger(FsService.name);
 
   private readonly s3 = new S3({
     endpoint: this.config.get('AWS_ENDPOINT'),

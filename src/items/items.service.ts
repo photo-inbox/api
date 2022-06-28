@@ -1,16 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
 import {
-  FileStorageService,
+  FsService,
   GetObjectReadStreamParams,
   HeadObjectParams,
-  HeadObjectResponse,
+  ItemEntity,
   UploadParams,
 } from '../shared';
-import stream from 'stream';
 import { Repository } from 'typeorm';
-import { ItemEntity } from '../../db';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ItemDto } from '@photo-inbox/dtos';
+import { ItemImageModel } from './items.models';
 
 @Injectable()
 export class ItemsService {
@@ -18,7 +17,7 @@ export class ItemsService {
   private readonly bucket = 'photo-inbox';
 
   constructor(
-    private readonly fileStorage: FileStorageService,
+    private readonly fs: FsService,
     @InjectRepository(ItemEntity)
     private readonly repository: Repository<ItemEntity>,
   ) {}
@@ -26,13 +25,13 @@ export class ItemsService {
   async getAll(): Promise<ItemDto[]> {
     const dbos = await this.repository.find();
 
-    return dbos.map(this.dboToDto);
+    return dbos.map(ItemsService.dboToDto);
   }
 
   async getById(id: string): Promise<ItemDto> {
     const dbo = await this.repository.findOneOrFail({ where: { id } });
 
-    return this.dboToDto(dbo);
+    return ItemsService.dboToDto(dbo);
   }
 
   async create(file: Express.Multer.File): Promise<ItemDto> {
@@ -43,18 +42,16 @@ export class ItemsService {
       ContentType: file.mimetype,
     };
 
-    await this.fileStorage.upload(params);
+    await this.fs.upload(params);
 
     const dbo = await this.repository.save(
       this.repository.create({ image: file.originalname }),
     );
 
-    return this.dboToDto(dbo);
+    return ItemsService.dboToDto(dbo);
   }
 
-  async getImage(
-    id: string,
-  ): Promise<[HeadObjectResponse, stream.Readable, string]> {
+  async getImage(id: string): Promise<ItemImageModel> {
     this.logger.debug(`getImage, ${id}`);
 
     const dbo = await this.repository.findOneOrFail({ where: { id } });
@@ -64,14 +61,14 @@ export class ItemsService {
       Key: dbo.image,
     };
 
-    return [
-      await this.fileStorage.headObject(params),
-      this.fileStorage.getObjectReadStream(params),
-      dbo.image,
-    ];
+    return {
+      data: await this.fs.headObject(params),
+      stream: this.fs.getObjectReadStream(params),
+      filename: dbo.image,
+    };
   }
 
-  private dboToDto(dbo: ItemEntity): ItemDto {
+  static dboToDto(dbo: ItemEntity): ItemDto {
     return {
       id: dbo.id,
       imageUrl: `api/items/${dbo.id}/image`,

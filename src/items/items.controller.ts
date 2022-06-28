@@ -46,7 +46,7 @@ export class ItemsController {
   ): Promise<StreamableFile> {
     this.logger.debug(`getImage, ${id}`);
 
-    const [data, stream, filename] = await this.service.getImage(id);
+    const { data, stream, filename } = await this.service.getImage(id);
 
     res.set({
       'Content-Type': data.ContentType,
