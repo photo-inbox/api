@@ -20,7 +20,7 @@ export class FsService {
     accessKeyId: this.config.get('AWS_ACCESS_KEY_ID'),
     secretAccessKey: this.config.get('AWS_SECRET_ACCESS_KEY'),
     region: this.config.get('AWS_REGION'),
-    s3ForcePathStyle: this.config.get('NODE_ENV') !== NodeEnv.production,
+    s3ForcePathStyle: this.config.get('NODE_ENV') === NodeEnv.development,
   });
 
   constructor(private readonly config: ConfigService<Env>) {}
