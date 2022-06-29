@@ -2,14 +2,11 @@ FROM node:alpine as build
 
 WORKDIR /usr/src/app
 
-# TODO unsecure way t opass credentials, use Docker secrets instead
-ARG GITHUB_TOKEN
-ENV GITHUB_TOKEN=$GITHUB_TOKEN
-
 COPY package*.json ./
 COPY .npmrc ./
 
-RUN npm install
+RUN --mount=type=secret,id=env source /run/secrets/env \
+    npm install
 
 COPY . .
 
@@ -19,13 +16,11 @@ FROM node:alpine as start
 
 WORKDIR /usr/src/app
 
-ARG GITHUB_TOKEN
-ENV GITHUB_TOKEN=$GITHUB_TOKEN
-
 COPY package*.json ./
 COPY .npmrc ./
 
-RUN npm install --only=production
+RUN --mount=type=secret,id=env source /run/secrets/env \
+    npm install --omit=dev
 
 COPY . .
 
