@@ -3,13 +3,13 @@ import {
   FsService,
   GetObjectReadStreamParams,
   HeadObjectParams,
-  ItemEntity,
   UploadParams,
 } from '../shared';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ItemDto } from '@photo-inbox/dtos';
 import { ItemImageModel } from './items.models';
+import { ItemEntity } from '../../db';
 
 @Injectable()
 export class ItemsService {

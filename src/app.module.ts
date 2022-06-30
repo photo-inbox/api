@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { Env, ItemEntity, SCHEMA } from './shared';
+import { Env, SCHEMA } from './shared';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ItemsModule } from './items/items.module';
 import { RouterModule } from '@nestjs/core';
+import { ItemEntity } from '../db';
 
 @Module({
   imports: [

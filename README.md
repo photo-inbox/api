@@ -8,10 +8,13 @@ API of the cloud service of photo-inbox app
 $ touch .env
 # don't forget to update command below with a real token
 $ echo 'GITHUB_TOKEN=[YOUR_TOKEN]' >> .env
+$ source .env
 $ npm install
 
 $ docker compose up -d
 
+$ docker exec -it postgres psql -U postgres -c 'CREATE DATABASE "photo-inbox";'
+$ docker exec -it postgres psql -U postgres -d photo-inbox -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
 $ npm run migrate:run
 
 $ aws configure --profile localstack
