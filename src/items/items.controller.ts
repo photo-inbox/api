@@ -1,9 +1,11 @@
 import {
+  Body,
   Controller,
   Get,
   Logger,
   Param,
   Post,
+  Query,
   Res,
   StreamableFile,
   UploadedFile,
@@ -12,7 +14,7 @@ import {
 import { Response } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ItemsService } from './items.service';
-import { ItemDto } from '@photo-inbox/dtos';
+import { CreateItemDto, ItemDto } from '@photo-inbox/dtos';
 
 @Controller()
 export class ItemsController {
@@ -25,18 +27,24 @@ export class ItemsController {
     return await this.service.getAll();
   }
 
+  @Get('label')
+  async autocompleteLabel(@Query('search') search?: string): Promise<string[]> {
+    return await this.service.autocompleteLabel(search);
+  }
+
   @Get(':id')
   async getById(@Param('id') id: string): Promise<ItemDto> {
     return await this.service.getById(id);
   }
 
   @Post()
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('image'))
   async create(
     @UploadedFile()
-    file: Express.Multer.File,
+    image: Express.Multer.File,
+    @Body() body: Omit<CreateItemDto, 'image'>,
   ): Promise<ItemDto> {
-    return await this.service.create(file);
+    return await this.service.create({ image, ...body });
   }
 
   @Get(':id/image')

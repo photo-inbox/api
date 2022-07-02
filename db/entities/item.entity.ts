@@ -1,4 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('items')
 export class ItemEntity {
@@ -10,4 +16,13 @@ export class ItemEntity {
 
   @Column({ nullable: true })
   label: string | null;
+
+  @CreateDateColumn()
+  created: string;
+
+  @UpdateDateColumn()
+  updated: string;
+
+  @Column({ default: false })
+  isCompleted: boolean;
 }

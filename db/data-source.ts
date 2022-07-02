@@ -6,6 +6,7 @@ import {
   AddLabelToItems1656570911463,
   CreateItems1656570489076,
 } from './migrations';
+import { FillItemsWithMoreColumns1656773332243 } from './migrations/1656773332243-FillItemsWithMoreColumns';
 
 const env: Env = (() => {
   const { parsed } = dotenv.config();
@@ -21,5 +22,9 @@ export default new DataSource({
   password: env.TYPEORM_PASSWORD,
   database: env.TYPEORM_DATABASE,
   entities: [ItemEntity],
-  migrations: [CreateItems1656570489076, AddLabelToItems1656570911463],
+  migrations: [
+    CreateItems1656570489076,
+    AddLabelToItems1656570911463,
+    FillItemsWithMoreColumns1656773332243,
+  ],
 });

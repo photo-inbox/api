@@ -14,14 +14,13 @@ $ npm install
 $ docker compose up -d
 
 $ docker exec -it postgres psql -U postgres -c 'CREATE DATABASE "photo-inbox";'
-$ docker exec -it postgres psql -U postgres -d photo-inbox -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
 $ npm run migrate:run
 
 $ aws configure --profile localstack
 # configure aws profile with following values
 # aws_access_key_id = foobar
 # aws_secret_access_key = foobar
-$ aws s3api create-bucket --bucket photo-inbox --endpoint http://localhost:4566 --profile localstack --region eu-west-3
+$ aws --endpoint-url http://localhost:4566 s3 mb s3://photo-inbox
 ```
 
 ## Bundle

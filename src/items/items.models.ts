@@ -6,3 +6,8 @@ export interface ItemImageModel {
   stream: stream.Readable;
   filename: string;
 }
+
+export interface CreateItemModel {
+  image: Express.Multer.File;
+  label?: string;
+}

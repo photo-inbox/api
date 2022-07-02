@@ -8,7 +8,7 @@ import {
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ItemDto } from '@photo-inbox/dtos';
-import { ItemImageModel } from './items.models';
+import { CreateItemModel, ItemImageModel } from './items.models';
 import { ItemEntity } from '../../db';
 
 @Injectable()
@@ -34,18 +34,18 @@ export class ItemsService {
     return ItemsService.dboToDto(dbo);
   }
 
-  async create(file: Express.Multer.File): Promise<ItemDto> {
+  async create({ image, ...other }: CreateItemModel): Promise<ItemDto> {
     const params: UploadParams = {
       Bucket: this.bucket,
-      Key: file.originalname,
-      Body: file.buffer,
-      ContentType: file.mimetype,
+      Key: image.originalname,
+      Body: image.buffer,
+      ContentType: image.mimetype,
     };
 
     await this.fs.upload(params);
 
     const dbo = await this.repository.save(
-      this.repository.create({ image: file.originalname }),
+      this.repository.create({ image: image.originalname, ...other }),
     );
 
     return ItemsService.dboToDto(dbo);
@@ -72,6 +72,28 @@ export class ItemsService {
     return {
       id: dbo.id,
       imageUrl: `api/items/${dbo.id}/image`,
+      isCompleted: dbo.isCompleted,
+      created: dbo.created,
     };
+  }
+
+  // TODO make it sorted by most used labels
+  async autocompleteLabel(search?: string): Promise<string[]> {
+    this.logger.debug(`autocompleteLabel ${search}`);
+
+    const builder = (() => {
+      const basic = this.repository
+        .createQueryBuilder('item')
+        .select(['item.label'])
+        .distinctOn(['label']);
+
+      if (!search) {
+        return basic;
+      }
+
+      return basic.where(`label ILIKE :search`, { search: `%${search}%` });
+    })();
+
+    return (await builder.getMany()).map((i) => i.label);
   }
 }
