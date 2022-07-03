@@ -10,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ItemDto } from '@photo-inbox/dtos';
 import { CreateItemModel, ItemImageModel } from './items.models';
 import { ItemEntity } from '../../db';
+import { AppRoute } from '../app.route';
 
 @Injectable()
 export class ItemsService {
@@ -71,7 +72,7 @@ export class ItemsService {
   static dboToDto(dbo: ItemEntity): ItemDto {
     return {
       id: dbo.id,
-      imageUrl: `api/items/${dbo.id}/image`,
+      imageUrl: `api/${AppRoute.items}/${dbo.id}/image`,
       isCompleted: dbo.isCompleted,
       created: dbo.created,
     };
