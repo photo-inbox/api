@@ -1,7 +1,7 @@
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { Env } from '../shared';
-import { I18nEntity, ItemEntity } from '../../db';
+import { ItemEntity } from '../../db';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class TypeormOptionsFactoryService implements TypeOrmOptionsFactory {
       username: this.config.get('TYPEORM_USERNAME'),
       password: this.config.get('TYPEORM_PASSWORD'),
       database: this.config.get('TYPEORM_DATABASE'),
-      entities: [I18nEntity, ItemEntity],
+      entities: [ItemEntity],
     };
   }
 }

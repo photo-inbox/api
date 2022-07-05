@@ -1,11 +1,12 @@
 import * as dotenv from 'dotenv';
 import { DataSource } from 'typeorm';
 import { Env, SCHEMA } from '../src/shared';
-import { I18nEntity, ItemEntity } from './entities';
+import { ItemEntity } from './entities';
 import {
   AddI18n1656795799008,
   AddLabelToItems1656570911463,
   CreateItems1656570489076,
+  DropI18n1657024891807,
   FillItemsWithMoreColumns1656773332243,
 } from './migrations';
 
@@ -22,11 +23,12 @@ export default new DataSource({
   username: env.TYPEORM_USERNAME,
   password: env.TYPEORM_PASSWORD,
   database: env.TYPEORM_DATABASE,
-  entities: [I18nEntity, ItemEntity],
+  entities: [ItemEntity],
   migrations: [
     CreateItems1656570489076,
     AddLabelToItems1656570911463,
     FillItemsWithMoreColumns1656773332243,
     AddI18n1656795799008,
+    DropI18n1657024891807,
   ],
 });
